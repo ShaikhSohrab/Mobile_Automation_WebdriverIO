@@ -7,12 +7,15 @@ describe('List Page Cases', () => {
     const apiData = apiResponse.data.map(candidate => candidate.name); // Extract names
 
     // Step 2: Locate Rendered Data on App
-    const renderedCandidates = await $$('~candidate-item'); // Replace with the actual selector
+    const renderedCandidates = await $$('//android.view.View[@scrollable="true"]');
     const renderedData = await Promise.all(
-      renderedCandidates.map(async item => await item.getText())
+    renderedCandidates.map(async item => await item.getText())
     );
 
     // Step 3: Verify Data Matches
     expect(renderedData).toEqual(apiData); // Simplified assertion
   });
+
+
+
 });

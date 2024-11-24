@@ -49,7 +49,7 @@ describe('List Page Cases', () => {
     
     });
 
-    it.only('Test Sorting Functionality in Map View', async () => {
+    it('Test Sorting Functionality in Map View', async () => {
         //find element by class name
         const mapButton = await $('//android.widget.TextView[@text="Map"]');
         await mapButton.click();
@@ -86,4 +86,41 @@ describe('List Page Cases', () => {
         await browser.pause(2000);
         
     })
+
+    it('Verify if location icon change if user click on Driver details on Map screen', async () => {
+       
+        //Goto Map
+        const mapButton = await $('//android.widget.TextView[@text="Map"]');
+        await mapButton.click();
+        await browser.pause(5000);
+
+        //Click on highlighted icon on Map
+        const mapIconPlateElement = await $('//android.view.View[@enabled="true"]');
+        await mapIconPlateElement.click();
+        await browser.pause(5000);
+        const plateNumberMap = await mapIconPlateElement.getAttribute('content-desc');
+
+    
+        console.log(await $('//android.view.View[@enabled="true"]').getAttribute('content-desc'));
+    
+        console.log(await $('//android.view.View[@enabled="true"]').getAttribute('class'));
+    });
+
+
+    const axios = require('axios');
+    const fs = require('fs');
+
+    it.only('Send GET request and save response in json file', async () => {
+        const apiUrl = 'https://interviewtestapi.azurewebsites.net/api/candidate'; 
+        try {
+            const { data } = await axios.get(apiUrl);
+            console.log(data);
+
+            fs.writeFileSync('apiResponseData.json', JSON.stringify(data, null, 2));
+        } catch (error) {
+            console.error('API request failed:', error.message);
+        }
+    });
+
+
 })
