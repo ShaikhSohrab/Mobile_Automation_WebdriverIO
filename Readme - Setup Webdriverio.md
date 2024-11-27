@@ -123,6 +123,25 @@ This document provides a step-by-step guide to set up WebdriverIO with Appium fo
     NOTE: Makesure the appium and your wdio.conf.js both are having same port number i.e. `4723`
 ---
 
+## Report after executing Tests**
+
+   - install Allure Reporter:<br>
+    `npm install @wdio/allure-reporter --save-dev`
+
+   - Configure Allure Reporter in WebdriverIO:<br>
+      ```
+      export const config = {
+        reporters: [
+            ['allure', {
+                outputDir: 'allure-results', // Directory where reports are stored
+                disableWebdriverStepsReporting: false,
+                disableWebdriverScreenshotsReporting: false,
+            }]
+        ],
+      };
+      ```
+
+
 This setup ensures you have WebdriverIO and Appium ready for Android automation testing.
 
 
