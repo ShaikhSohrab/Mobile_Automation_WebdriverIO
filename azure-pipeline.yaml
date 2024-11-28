@@ -4,18 +4,56 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- checkout: self
-  displayName: 'Check Repository'
+stages:
+  - stage: BuildAndTest
+    displayName: "Build, Install, and Run Tests"
+    jobs:
+      - job: AndroidTests
+        displayName: "Run WebDriverIO Tests on Android"
+        steps:
+          - task: UseNode@2
+            inputs:
+              version: '18.x'
+          
+          - script: |
+              echo "Installing Java"
+              sudo apt-get update
+              sudo apt-get install -y openjdk-11-jdk
+            displayName: "Install Java"
 
-- script: 
-    cd web_assignment
-    npm install
-    npm playwright install
-    npx playwright test --project=chromium --reporter=html
-  displayName: 'Execute Playwright Tests'
+          - script: |
+              echo "Installing Android SDK..."
+              sudo apt-get install -y unzip
+              curl -O https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+              mkdir -p $HOME/Android/cmdline-tools
+              unzip -q commandlinetools-linux-9477386_latest.zip -d $HOME/Android/cmdline-tools
+              mv $HOME/Android/cmdline-tools/cmdline-tools $HOME/Android/cmdline-tools/latest
+              echo "export ANDROID_HOME=$HOME/Android" >> $BASH_ENV
+              echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH" >> $BASH_ENV
+              source $BASH_ENV
+              sdkmanager --licenses
+              sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0" "system-images;android-31;google_apis;x86_64" "emulator"
+            displayName: "Install Android SDK"
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/mobile_assignment/test-results'
-    ArtifactName: 'Test Results'
+          - script: |
+              echo "Creating and starting Android Emulator..."
+              echo "no" | avdmanager create avd -n test -k "system-images;android-31;google_apis;x86_64"
+              $ANDROID_HOME/emulator/emulator-headless -avd test -no-boot-anim -no-audio -no-window &
+              adb wait-for-device
+              adb shell input keyevent 82
+            displayName: "Setup Android Emulator"
+
+          - script: |
+              echo "Installing Appium..."
+              npm install -g appium
+            displayName: "Install Appium"
+
+          - script: |
+              echo "Installing project dependencies..."
+              npm install
+            displayName: "Install Project Dependencies"
+
+          - script: |
+              echo "Running WebDriverIO tests..."
+              npx wdio wdio.conf.js
+            displayName: "Run WebDriverIO Tests"

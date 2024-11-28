@@ -1,23 +1,28 @@
+// Import page class created in Pages folder
 const ListScreenPage = require('../../pages/list_page');
 const MapScreenPage = require('../../pages/map_page');
 
-describe('List Page Cases', () => {
-    it('Test Search on List Screen', async () => {
-        // Use ListScreenPage to interact with the search bar and perform actions
+describe("Mobile Cases", () => {
+    it("Test Search on List Screen", async () => {
+
+        // Use ListScreenPage class to perform Search action
         await ListScreenPage.openSearchBar();
-        await ListScreenPage.searchForText('Joseph Owen');
-        // Verify if the searched result is the same as user searched
-        const isSearchResultDisplayed = await ListScreenPage.verifySearchResult('Joseph Owen');
+        await ListScreenPage.searchForText("Joseph Owen");
+
+        // Verify if the searched result is the same as what user searched
+        const isSearchResultDisplayed = await ListScreenPage.verifySearchResult("Joseph Owen");
         expect(isSearchResultDisplayed).toBe(true);
 
+        // Clear Search
         await ListScreenPage.clearSearch();
 
-        await driver.execute('mobile: hideKeyboard');
+        //Hide Keyboard after the test is executed, to avoid failure of next case
+        await driver.execute("mobile: hideKeyboard");
         
     });
 
 
-    it('Test Search Functionality on Map Screen', async () => {
+    it("Test Search Functionality on Map Screen", async () => {
         const searchTextMap = "Joseph Owen";
 
         await MapScreenPage.gotoMapPageAndEnterTextInSearch(searchTextMap);
@@ -28,24 +33,24 @@ describe('List Page Cases', () => {
 
         await ListScreenPage.clearSearch();
 
-        await driver.execute('mobile: hideKeyboard');
+        await driver.execute("mobile: hideKeyboard");
     });
 
 
-    it('Test Sorting Functionality in List View', async () => {
+    it("Test Sorting Functionality in List View", async () => {
         await ListScreenPage.clickOnSortingButtonListPage();
         await browser.pause(5000);
     
     });
 
-    it('Test Sorting Functionality in Map View', async () => {
+    it("Test Sorting Functionality in Map View", async () => {
         await MapScreenPage.clickOnMapButton();
-        await MapScreenPage.verifySortingOnMap();
+        await MapScreenPage.clickSortingOnMap();
         
     });
 
 
-    it('Test Switch List View to Map View', async () => {
+    it("Test Switch List View to Map View", async () => {
         //Verify Map View screen 
         await MapScreenPage.clickOnMapButton();
 
@@ -60,7 +65,7 @@ describe('List Page Cases', () => {
         
     })
 
-    it('Verify if location icon is clickable on Map screen', async () => {
+    it("Verify if location icon is clickable on Map screen", async () => {
        
         //Goto Map
         await MapScreenPage.clickOnMapButton();
@@ -69,17 +74,34 @@ describe('List Page Cases', () => {
         await MapScreenPage.clickOnHighlightIconInMap();
     });
 
-    it('Send GET request and save response in json file', async () => {
-        const apiUrl = 'https://interviewtestapi.azurewebsites.net/api/candidate'; 
+    it("Send GET request and save response in json file", async () => {
+        const apiUrl = "https://interviewtestapi.azurewebsites.net/api/candidate"; 
         try {
             const { data } = await axios.get(apiUrl);
             console.log(data);
 
-            fs.writeFileSync('apiResponseData.json', JSON.stringify(data, null, 2));
+            fs.writeFileSync("apiResponseData.json", JSON.stringify(data, null, 2));
         } catch (error) {
-            console.error('API request failed:', error.message);
+            console.error("API request failed:", error.message);
         }
     });
+
+    it("verify data fetched from the API", async () => {
+        const axios = require("axios");
+        const fs = require("fs");
+    
+        try {
+            // Fetch data from the API
+            const { data } = await axios.get("https://interviewtestapi.azurewebsites.net/api/candidate");
+    
+            // Save API data to a JSON file
+            fs.writeFileSync("apiData.json", JSON.stringify(data));
+    
+            console.log("API data saved to apiData.json");
+        } catch (error) {
+            console.error("Error:", error.message);
+        }
+      });
 
 
 });

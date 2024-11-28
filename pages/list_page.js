@@ -1,11 +1,11 @@
 class ListScreenPage {
     // Locator Element Defined
     get listViewButton(){
-        return $('//android.view.View[@bounds="[0,1950][529,2160]"]');
+        return $("//android.view.View[@bounds='[0,1950][529,2160]']");
     }
 
     get searchBar() {
-        return $('//android.widget.EditText/android.view.View');
+        return $("//android.widget.EditText[@enabled='true']");
     }
 
     get searchResult() {
@@ -13,17 +13,18 @@ class ListScreenPage {
     }
 
     get sortingButton() {
-        return $('android.widget.Button');
+        return $("android.widget.Button");
     }
 
     get listViewLocator() {
-        return $('//android.view.View[@class="android.view.View" and @displayed="true"]');
+        return $("//android.view.View[@class='android.view.View' and @displayed='true']");
     }
 
     get clearSearchBar() {
-        return $('//android.view.View[@content-desc="search close"]');
+        return $("//android.view.View[@content-desc='search close']");
     }
 
+    // Click on List Button on bottom Navigation bar
     async clickOnListViewButton() {
         await this.listViewButton.waitForDisplayed({timeout: 2000});
         await this.listViewButton.click();
@@ -38,9 +39,10 @@ class ListScreenPage {
 
     // Enter Text in Search bar
     async searchForText(text) {
-        await driver.execute('mobile: type', { text });
+        await driver.execute("mobile: type", { text });
     }
 
+    // Clear Text from Search bar
     async clearSearch() {
         await this.clearSearchBar.click();
     }
@@ -52,6 +54,7 @@ class ListScreenPage {
         return result.isDisplayed();
     }
 
+    // Verify Sort Button Click
     async clickOnSortingButtonListPage() {
         await this.listViewButton.waitForDisplayed({timeout: 2000});
         await this.listViewButton.click();
@@ -59,6 +62,7 @@ class ListScreenPage {
         await this.sortingButton.click();
     }
 
+    // Verify list is visible
     async isListViewVisible() {
         await this.listViewLocator.waitForDisplayed({timeout:2000});
         await this.listViewButton.isDisplayed();

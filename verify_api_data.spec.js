@@ -16,6 +16,4 @@ describe("List Page Cases", () => {
     expect(renderedData).toEqual(apiData); // Simplified assertion
   });
 
-
-
 });
